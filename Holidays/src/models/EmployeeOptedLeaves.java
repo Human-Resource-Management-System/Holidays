@@ -1,54 +1,42 @@
 package models;
-import java.sql.Date;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "hrms_employeeoptedleaves")
 public class EmployeeOptedLeaves {
-    @Id
-    @Column(name = "eolv_date")
-    private Date eolvDate;
 
-    @ManyToOne
-    @JoinColumn(name = "empl_id")
-    private Employee employee;
+	@EmbeddedId
+	private EmployeeOptedLeavesId optedleavesId;
 
-    @Column(name = "year_id")
-    private int yearId;
+	@Column(name = "year_id")
+	private int year_id;
 
-    // Constructors, getters, and setters
+	public EmployeeOptedLeaves() {
+	}
 
-    public EmployeeOptedLeaves() {
-    }
+	public EmployeeOptedLeaves(EmployeeOptedLeavesId optedleavesId, int year_id) {
+		super();
+		this.optedleavesId = optedleavesId;
+		this.year_id = year_id;
+	}
 
-    public EmployeeOptedLeaves(Date eolvDate, Employee employee, int yearId) {
-        this.eolvDate = eolvDate;
-        this.employee = employee;
-        this.yearId = yearId;
-    }
+	public EmployeeOptedLeavesId getOptedleavesId() {
+		return optedleavesId;
+	}
 
-    public Date getEolvDate() {
-        return eolvDate;
-    }
+	public void setOptedleavesId(EmployeeOptedLeavesId optedleavesId) {
+		this.optedleavesId = optedleavesId;
+	}
 
-    public void setEolvDate(Date eolvDate) {
-        this.eolvDate = eolvDate;
-    }
+	public int getYear_id() {
+		return year_id;
+	}
 
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
-
-    public int getYearId() {
-        return yearId;
-    }
-
-    public void setYearId(int yearId) {
-        this.yearId = yearId;
-    }
+	public void setYear_id(int year_id) {
+		this.year_id = year_id;
+	}
 }

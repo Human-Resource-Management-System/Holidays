@@ -1,10 +1,15 @@
 package controllers;
 
-import java.text.SimpleDateFormat;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +23,8 @@ import DAO.EmployeeOptedLeavesDAO;
 import DAO.HolidayDAO;
 import DAO.JobGradeHolidaysDAO;
 import models.Employee;
+import models.EmployeeOptedLeaves;
+import models.EmployeeOptedLeavesId;
 import models.Holiday;
 import models.JobGradeHolidays;
 
@@ -34,7 +41,8 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeOptedLeavesDAO employeeOptedLeavesDAO;
 
-	// Other DAOs and services
+	@Autowired
+	private ApplicationContext context;
 
 	public void setJobGradeHolidaysDAO(JobGradeHolidaysDAO jobGradeHolidaysDAO) {
 		// Set the jobGradeHolidaysDAO property
@@ -88,14 +96,41 @@ public class EmployeeController {
 	}
 
 	@RequestMapping(value = "/employee/submit", method = RequestMethod.GET)
-	public String submitSelectedHolidays(@RequestParam("selectedHolidays") List<String> selectedHolidays) {
+	@Transactional
+	public String submitSelectedHolidays(@RequestParam("selectedHolidays") List<String> selectedHolidays,
+			@RequestParam("emplId") int emplId) {
 		// Process the selected holidays and save to the database
-		System.out.println("hello");
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		System.out.println("hello this is emplId " + emplId);
+		List<String> years = new ArrayList<>();
+		List<String> dates = new ArrayList<>();
+
 		for (String holiday : selectedHolidays) {
+			String[] parts = holiday.split("\\|");
+			// years.add(parts[0]);
+			// dates.add(parts[1]);
 
-			System.out.println(holiday);
+			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
+			try {
+				LocalDate localDate = LocalDate.parse(parts[1].trim(), inputFormatter);
+				Date date = Date.valueOf(localDate);
+				System.out.println(date);
+
+				EmployeeOptedLeavesId employeeoptedleavesId = context.getBean(EmployeeOptedLeavesId.class);
+
+				employeeoptedleavesId.setEmployeeId(emplId);
+				employeeoptedleavesId.setHolidayDate(date);
+
+				EmployeeOptedLeaves employeeoptedleaves = context.getBean(EmployeeOptedLeaves.class);
+
+				employeeoptedleaves.setOptedleavesId(employeeoptedleavesId);
+				employeeoptedleaves.setYear_id(Integer.parseInt(parts[0].trim()));
+
+				employeeOptedLeavesDAO.saveEmployeeOptedLeaves(employeeoptedleaves);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		return "redirect:/success";

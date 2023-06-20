@@ -30,11 +30,12 @@
                 }
                 
                 console.log($("#HolidayForm").serialize());
-                
+                var formData = $("#HolidayForm").serializeArray();
+                formData.push({ name: "emplId", value: "${employee.emplId}" });
                 $.ajax({
                 	url:"submit",
                 	type:"GET",
-                	data: $("#HolidayForm").serialize(),
+                	 data: formData,
                 	success: function(response){
                 		console.log(response);
                 	},
@@ -93,5 +94,7 @@
 
         <input type="button" value="Submit" id="submitBtn">
     </form>
+    
+    
 </body>
 </html>

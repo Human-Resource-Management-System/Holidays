@@ -63,8 +63,8 @@
 
 
     <bean id="jobGradeHolidaysDAOImpl" class="DAO.JobGradeHolidaysDAOImpl"/>
-    
-   
+     <bean id="employeeoptedleaves" class="models.EmployeeOptedLeaves"  scope="prototype"/>
+    <bean id="employeeoptedleavesId" class="models.EmployeeOptedLeavesId" scope="prototype" />
       <bean id="holidayDAO" class="DAO.HolidayDAOImpl" />
        <bean id="employeeOptedLeavesDAO" class="DAO.EmployeeOptedLeavesDAOImpl" />
       
